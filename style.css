@@ -1,0 +1,159 @@
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+
+body {
+    background-image: url("background.jpg");
+    background-size: cover;
+    background-position: center;
+    height: 100vh; width: 100vw;
+    overflow: hidden;
+} 
+
+#ui-layer {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 10;
+    display: flex; flex-direction: column; justify-content: space-between; padding: 20px;
+}
+
+header {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px 20px; border-radius: 10px; text-align: center;
+    width: max-content; margin: 0 auto; pointer-events: auto;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    border: 2px solid #3b82f6;
+}
+
+.stats {
+    display: flex; gap: 20px; font-size: 1.2rem; font-weight: bold;
+    margin-top: 5px; justify-content: center;
+}
+
+.screen {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.95); padding: 40px; border-radius: 15px;
+    text-align: center; pointer-events: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); transition: opacity 0.3s;
+    border: 3px solid #3b82f6;
+}
+
+.hidden { display: none !important; }
+
+button.action-btn {
+    margin-top: 20px; padding: 12px 30px; font-size: 1.2rem; font-weight: bold;
+    background-color: #3b82f6; color: white; border: none; border-radius: 8px;
+    cursor: pointer; transition: transform 0.1s, background 0.2s;
+    box-shadow: 0 4px 0 #2563eb;
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+button.action-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #2563eb; }
+
+.btn-orange {
+    background-color: #f59e0b;
+    box-shadow: 0 4px 0 #b45309;
+}
+.btn-orange:active { box-shadow: 0 0 0 #b45309; }
+
+#finalScore {
+    color: #3b82f6;
+    margin: 10px 0;
+}
+
+#player {
+    height: 90px; width: 90px;
+    background-image: url("4n.png"); background-size: contain; background-repeat: no-repeat; background-position: center;
+    position: absolute; z-index: 5;
+    transition: background-image 0.1s, filter 0.2s; 
+}
+
+.stunned {
+    filter: grayscale(100%) brightness(50%) sepia(100%) hue-rotate(300deg) saturate(500%);
+    animation: shake 0.2s infinite;
+}
+
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+#target {
+    height: 50px; width: 50px;
+    background-image: url("pokeball.png"); background-size: contain; background-repeat: no-repeat; background-position: center;
+    position: absolute; z-index: 4;
+}
+
+.obstacle {
+    height: 60px; width: 60px;
+    background: radial-gradient(circle, #ff4747 0%, #8b0000 100%);
+    border-radius: 50%;
+    position: absolute; z-index: 3;
+    box-shadow: 0 0 15px #ff4747;
+    opacity: 0.8;
+}
+
+.powerup {
+    height: 40px; width: 40px;
+    background: radial-gradient(circle, #00f2fe 0%, #4facfe 100%);
+    border-radius: 50%;
+    position: absolute; z-index: 3;
+    box-shadow: 0 0 20px #00f2fe;
+    animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.9); }
+    100% { transform: scale(1.1); box-shadow: 0 0 30px #00f2fe; }
+}
+
+.point-popup {
+    position: absolute; color: #ffde00; font-size: 2.5rem; font-weight: bold;
+    -webkit-text-stroke: 1px #3b4cca; z-index: 100; pointer-events: none;
+    animation: floatUp 1s ease-out forwards;
+}
+
+.level-popup {
+    position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%);
+    color: #f59e0b; font-size: 4rem; font-weight: bold;
+    -webkit-text-stroke: 2px #b45309; z-index: 100; pointer-events: none;
+    animation: levelUp 2s ease-out forwards;
+}
+
+@keyframes levelUp {
+    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+    20% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+    80% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    100% { transform: translateY(-60px) scale(1.5); opacity: 0; }
+}
+
+.particle {
+    position: absolute; border-radius: 50%; pointer-events: none; z-index: 99;
+    animation: pop 0.6s ease-out forwards;
+}
+
+@keyframes pop {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+
+#dashContainer {
+    width: 200px; height: 12px; background: #ddd; border-radius: 6px;
+    margin: 10px auto 0; overflow: hidden; border: 1px solid #999;
+}
+
+#dashBar {
+    height: 100%; width: 100%; background: #00ff88; transition: width 0.1s linear;
+}
