@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wingull's Catch</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-image: url("background.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        } 
+
+        #ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: max-content;
+            margin: 0 auto;
+            pointer-events: auto;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 5px;
+            justify-content: center;
+        }
+
+        .screen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            pointer-events: auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transition: opacity 0.3s;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        button.action-btn {
+            margin-top: 20px;
+            padding: 10px 25px;
+            font-size: 1.2rem;
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button.action-btn:hover {
+            background-color: #2563eb;
+        }
+
+        #player {
+            height: 100px;
+            width: 100px;
+            background-image: url("4n.png");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            position: absolute; 
+            z-index: 5; 
+            transition: background-image 0.1s;
+        }
+
+        #target {
+            height: 60px;
+            width: 60px;
+            background-image: url("pokeball.png");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            position: absolute;
+            z-index: 4;
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: grid;
+            grid-template-columns: 60px 60px 60px;
+            grid-template-rows: 60px 60px 60px;
+            gap: 10px;
+            pointer-events: auto;
+            z-index: 10;
+        }
+
+        .ctrl-btn {
+            background-color: rgba(255, 255, 255, 0.7);
+            border: 2px solid #333;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            user-select: none;
+            touch-action: manipulation;
+        }
+        
+        .ctrl-btn:active {
+            background-color: rgba(200, 200, 200, 0.9);
+        }
+
+        .up { grid-column: 2; grid-row: 1; }
+        .left { grid-column: 1; grid-row: 2; }
+        .stop { grid-column: 2; grid-row: 2; background-color: rgba(255, 100, 100, 0.7); }
+        .right { grid-column: 3; grid-row: 2; }
+        .down { grid-column: 2; grid-row: 3; }
+
+    </style>
+</head>
+<body>
+
+    <div id="ui-layer">
+        <header>
+            <h1>Catch the Pokeball!</h1>
+            <div class="stats">
+                <span id="scoreDisplay">Score: 0</span>
+                <span id="livesDisplay">Lives: 3</span>
+                <span id="timeDisplay">Time: 10s</span>
+            </div>
+        </header>
+
+        <div id="startScreen" class="screen">
+            <h2>Ready to Fly?</h2>
+            <p>Use W,A,S,D, Arrow Keys, or the buttons.</p>
+            <p>Catch the Pokeball before the timer runs out!</p>
+            <p>Don't touch the edges!</p>
+            <button class="action-btn" onclick="startGame()">Start Game</button>
+        </div>
+
+        <div id="gameOverScreen" class="screen hidden">
+            <h2>Game Over</h2>
+            <p id="finalScore">Your score: 0</p>
+            <button class="action-btn" onclick="startGame()">Play Again</button>
+        </div>
+    </div>
+
+    <div id="player" class="hidden"></div>
+    <div id="target" class="hidden"></div>
+
+    <div class="controls">
+        <button class="ctrl-btn up" onpointerdown="setDirection('up')" onpointerup="stopMovement()" onpointerleave="stopMovement()">↑</button>
+        <button class="ctrl-btn left" onpointerdown="setDirection('left')" onpointerup="stopMovement()" onpointerleave="stopMovement()">←</button>
+        <button class="ctrl-btn stop" onclick="stopMovement()">■</button>
+        <button class="ctrl-btn right" onpointerdown="setDirection('right')" onpointerup="stopMovement()" onpointerleave="stopMovement()">→</button>
+        <button class="ctrl-btn down" onpointerdown="setDirection('down')" onpointerup="stopMovement()" onpointerleave="stopMovement()">↓</button>
+    </div>
+
+    <script>
+        let isPlaying = false;
+        let animationFrameId;
+        let score = 0;
+        let lives = 3;
+        
+        let targetTimer;
+        let timeLeft = 10;
+
+        const player = {
+            el: document.getElementById('player'),
+            x: 0,
+            y: 0,
+            width: 100,
+            height: 100,
+            speed: 8,
+            dx: 0,
+            dy: 0
+        };
+
+        const target = {
+            el: document.getElementById('target'),
+            x: 0,
+            y: 0,
+            width: 60,
+            height: 60
+        };
+
+        const images = {
+            left: 'url("1n.png")',
+            up: 'url("2n.png")',
+            down: 'url("3n.png")',
+            right: 'url("4n.png")'
+        };
+
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const livesDisplay = document.getElementById('livesDisplay');
+        const timeDisplay = document.getElementById('timeDisplay');
+        const startScreen = document.getElementById('startScreen');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const finalScoreDisplay = document.getElementById('finalScore');
+
+        function startGame() {
+            score = 0;
+            lives = 3;
+            updateUI();
+            
+            startScreen.classList.add('hidden');
+            gameOverScreen.classList.add('hidden');
+            player.el.classList.remove('hidden');
+            target.el.classList.remove('hidden');
+
+            player.x = window.innerWidth / 2 - player.width / 2;
+            player.y = window.innerHeight / 2 - player.height / 2;
+            player.dx = 0;
+            player.dy = 0;
+            player.el.style.backgroundImage = images.right;
+
+            spawnTarget();
+            
+            isPlaying = true;
+            
+            cancelAnimationFrame(animationFrameId);
+            clearInterval(targetTimer);
+            
+            startTimer();
+            gameLoop();
+        }
+
+        function gameOver(reason) {
+            isPlaying = false;
+            cancelAnimationFrame(animationFrameId);
+            clearInterval(targetTimer);
+
+            player.el.classList.add('hidden');
+            target.el.classList.add('hidden');
+            gameOverScreen.classList.remove('hidden');
+            
+            finalScoreDisplay.innerText = `Your score: ${score} (${reason})`;
+        }
+
+        function spawnTarget() {
+            const maxX = window.innerWidth - target.width - 20;
+            const maxY = window.innerHeight - target.height - 20;
+
+            target.x = Math.max(20, Math.floor(Math.random() * maxX));
+            target.y = Math.max(20, Math.floor(Math.random() * maxY));
+
+            target.el.style.left = target.x + 'px';
+            target.el.style.top = target.y + 'px';
+
+            timeLeft = Math.max(3, 10 - Math.floor(score / 5)); 
+            timeDisplay.innerText = `Time: ${timeLeft}s`;
+        }
+
+        function startTimer() {
+            targetTimer = setInterval(() => {
+                if (!isPlaying) return;
+                
+                timeLeft--;
+                timeDisplay.innerText = `Time: ${timeLeft}s`;
+
+                if (timeLeft <= 0) {
+                    lives--;
+                    updateUI();
+                    if (lives <= 0) {
+                        gameOver("Ran out of lives!");
+                    } else {
+                        spawnTarget();
+                    }
+                }
+            }, 1000);
+        }
+
+        function updateUI() {
+            scoreDisplay.innerText = `Score: ${score}`;
+            livesDisplay.innerText = `Lives: ${lives}`;
+        }
+
+        function gameLoop() {
+            if (!isPlaying) return;
+
+            player.x += player.dx;
+            player.y += player.dy;
+
+            if (player.x < 0 || player.x + player.width > window.innerWidth ||
+                player.y < 0 || player.y + player.height > window.innerHeight) {
+                gameOver("Hit the wall!");
+                return;
+            }
+
+            const pBox = { x: player.x + 10, y: player.y + 10, w: player.width - 20, h: player.height - 20 };
+            const tBox = { x: target.x + 5, y: target.y + 5, w: target.width - 10, h: target.height - 10 };
+
+            if (pBox.x < tBox.x + tBox.w &&
+                pBox.x + pBox.w > tBox.x &&
+                pBox.y < tBox.y + tBox.h &&
+                pBox.h + pBox.y > tBox.y) {
+                
+                score++;
+                updateUI();
+                spawnTarget();
+            }
+
+            player.el.style.transform = `translate(${player.x}px, ${player.y}px)`;
+
+            animationFrameId = requestAnimationFrame(gameLoop);
+        }
+
+        function setDirection(dir) {
+            if (!isPlaying) return;
+            
+            player.dx = 0;
+            player.dy = 0;
+
+            if (dir === 'left') {
+                player.dx = -player.speed;
+                player.el.style.backgroundImage = images.left;
+            } else if (dir === 'right') {
+                player.dx = player.speed;
+                player.el.style.backgroundImage = images.right;
+            } else if (dir === 'up') {
+                player.dy = -player.speed;
+                player.el.style.backgroundImage = images.up;
+            } else if (dir === 'down') {
+                player.dy = player.speed;
+                player.el.style.backgroundImage = images.down;
+            }
+        }
+
+        function stopMovement() {
+            player.dx = 0;
+            player.dy = 0;
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (!isPlaying) return;
+            
+            switch(e.key.toLowerCase()) {
+                case 'w':
+                case 'arrowup':
+                    setDirection('up');
+                    break;
+                case 'a':
+                case 'arrowleft':
+                    setDirection('left');
+                    break;
+                case 's':
+                case 'arrowdown':
+                    setDirection('down');
+                    break;
+                case 'd':
+                case 'arrowright':
+                    setDirection('right');
+                    break;
+                case ' ':
+                    stopMovement();
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>
