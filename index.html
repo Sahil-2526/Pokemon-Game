@@ -3,155 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wingull's Catch</title>
+    <title>Wingull's Catch - Pro Edition</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
 
         body {
             background-image: url("background.jpg");
             background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
-            height: 100vh;
-            width: 100vw;
+            height: 100vh; width: 100vw;
             overflow: hidden;
         } 
 
         #ui-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 20px;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 10;
+            display: flex; flex-direction: column; justify-content: space-between; padding: 20px;
         }
 
         header {
-            background: rgba(255, 255, 255, 0.8);
-            padding: 10px 20px;
-            border-radius: 10px;
-            text-align: center;
-            width: max-content;
-            margin: 0 auto;
-            pointer-events: auto;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.85);
+            padding: 10px 20px; border-radius: 10px; text-align: center;
+            width: max-content; margin: 0 auto; pointer-events: auto;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border: 2px solid #3b82f6;
         }
 
         .stats {
-            display: flex;
-            gap: 20px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-top: 5px;
-            justify-content: center;
+            display: flex; gap: 20px; font-size: 1.2rem; font-weight: bold;
+            margin-top: 5px; justify-content: center;
         }
 
         .screen {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.95);
-            padding: 40px;
-            border-radius: 15px;
-            text-align: center;
-            pointer-events: auto;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            transition: opacity 0.3s;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95); padding: 40px; border-radius: 15px;
+            text-align: center; pointer-events: auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3); transition: opacity 0.3s;
+            border: 3px solid #3b82f6;
         }
 
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
 
         button.action-btn {
-            margin-top: 20px;
-            padding: 10px 25px;
-            font-size: 1.2rem;
-            background-color: #3b82f6;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.2s;
+            margin-top: 20px; padding: 12px 30px; font-size: 1.2rem; font-weight: bold;
+            background-color: #3b82f6; color: white; border: none; border-radius: 8px;
+            cursor: pointer; transition: transform 0.1s, background 0.2s;
+            box-shadow: 0 4px 0 #2563eb;
         }
-
-        button.action-btn:hover {
-            background-color: #2563eb;
-        }
+        button.action-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #2563eb; }
 
         #player {
-            height: 100px;
-            width: 100px;
-            background-image: url("4n.png");
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            position: absolute; 
-            z-index: 5; 
-            transition: background-image 0.1s;
+            height: 90px; width: 90px;
+            background-image: url("4n.png"); background-size: contain; background-repeat: no-repeat; background-position: center;
+            position: absolute; z-index: 5;
+            transition: background-image 0.1s, filter 0.2s; 
+        }
+
+        .stunned {
+            filter: grayscale(100%) brightness(50%) sepia(100%) hue-rotate(300deg) saturate(500%);
+            animation: shake 0.2s infinite;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
         }
 
         #target {
-            height: 60px;
-            width: 60px;
-            background-image: url("pokeball.png");
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
+            height: 50px; width: 50px;
+            background-image: url("pokeball.png"); background-size: contain; background-repeat: no-repeat; background-position: center;
+            position: absolute; z-index: 4;
+        }
+
+        .obstacle {
+            height: 60px; width: 60px;
+            background: radial-gradient(circle, #ff4747 0%, #8b0000 100%);
+            border-radius: 50%;
+            position: absolute; z-index: 3;
+            box-shadow: 0 0 15px #ff4747;
+            opacity: 0.8;
+        }
+
+        .point-popup {
             position: absolute;
-            z-index: 4;
-            animation: pulse 1s infinite alternate;
-        }
-
-        @keyframes pulse {
-            from { transform: scale(1); }
-            to { transform: scale(1.1); }
-        }
-
-        .controls {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: grid;
-            grid-template-columns: 60px 60px 60px;
-            grid-template-rows: 60px 60px 60px;
-            gap: 10px;
-            pointer-events: auto;
-            z-index: 10;
-        }
-
-        .ctrl-btn {
-            background-color: rgba(255, 255, 255, 0.7);
-            border: 2px solid #333;
-            border-radius: 10px;
+            color: #ffde00;
+            font-size: 2rem;
             font-weight: bold;
-            font-size: 1.2rem;
-            cursor: pointer;
-            user-select: none;
-            touch-action: manipulation;
-        }
-        
-        .ctrl-btn:active {
-            background-color: rgba(200, 200, 200, 0.9);
+            -webkit-text-stroke: 1px #3b4cca;
+            z-index: 100;
+            pointer-events: none;
+            animation: floatUp 1s ease-out forwards;
         }
 
-        .up { grid-column: 2; grid-row: 1; }
-        .left { grid-column: 1; grid-row: 2; }
-        .stop { grid-column: 2; grid-row: 2; background-color: rgba(255, 100, 100, 0.7); }
-        .right { grid-column: 3; grid-row: 2; }
-        .down { grid-column: 2; grid-row: 3; }
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-50px) scale(1.5); opacity: 0; }
+        }
+
+        #dashContainer {
+            width: 200px; height: 10px; background: #ddd; border-radius: 5px;
+            margin: 10px auto 0; overflow: hidden;
+        }
+        #dashBar {
+            height: 100%; width: 100%; background: #00ff88; transition: width 0.1s linear;
+        }
 
     </style>
 </head>
@@ -163,234 +127,262 @@
             <div class="stats">
                 <span id="scoreDisplay">Score: 0</span>
                 <span id="livesDisplay">Lives: 3</span>
-                <span id="timeDisplay">Time: 10s</span>
+                <span id="timeDisplay">Time: 15s</span>
             </div>
+            <div id="dashContainer"><div id="dashBar"></div></div>
         </header>
 
         <div id="startScreen" class="screen">
-            <h2>Ready to Fly?</h2>
-            <p>Use W,A,S,D, Arrow Keys, or the buttons.</p>
-            <p>Catch the Pokeball before the timer runs out!</p>
-            <p>Don't touch the edges!</p>
+            <h2>Wingull's Challenge</h2>
+            <p style="margin-top: 10px; text-align: left;">
+                🎮 <b>WASD / Arrows</b>: Move <br>
+                🚀 <b>Spacebar</b>: Dash <br>
+                ⚠️ <b>Avoid Red Orbs</b>: They hurt! <br>
+            </p>
             <button class="action-btn" onclick="startGame()">Start Game</button>
         </div>
 
         <div id="gameOverScreen" class="screen hidden">
-            <h2>Game Over</h2>
-            <p id="finalScore">Your score: 0</p>
+            <h2>Game Over!</h2>
+            <h1 id="finalScore" style="color: #3b82f6; margin: 10px 0;">0</h1>
+            <p id="deathReason">You ran out of lives.</p>
             <button class="action-btn" onclick="startGame()">Play Again</button>
         </div>
     </div>
 
     <div id="player" class="hidden"></div>
     <div id="target" class="hidden"></div>
-
-    <div class="controls">
-        <button class="ctrl-btn up" onpointerdown="setDirection('up')" onpointerup="stopMovement()" onpointerleave="stopMovement()">↑</button>
-        <button class="ctrl-btn left" onpointerdown="setDirection('left')" onpointerup="stopMovement()" onpointerleave="stopMovement()">←</button>
-        <button class="ctrl-btn stop" onclick="stopMovement()">■</button>
-        <button class="ctrl-btn right" onpointerdown="setDirection('right')" onpointerup="stopMovement()" onpointerleave="stopMovement()">→</button>
-        <button class="ctrl-btn down" onpointerdown="setDirection('down')" onpointerup="stopMovement()" onpointerleave="stopMovement()">↓</button>
-    </div>
+    <div id="obstaclesContainer"></div>
 
     <script>
         let isPlaying = false;
         let animationFrameId;
-        let score = 0;
-        let lives = 3;
-        
+        let score = 0; let lives = 3; let timeLeft = 15;
         let targetTimer;
-        let timeLeft = 10;
+        
+        let dashEnergy = 100; 
+        const dashCost = 50; 
+        let isDashing = false;
 
         const player = {
             el: document.getElementById('player'),
-            x: 0,
-            y: 0,
-            width: 100,
-            height: 100,
-            speed: 8,
-            dx: 0,
-            dy: 0
+            x: 0, y: 0, width: 80, height: 80,
+            baseSpeed: 7, speed: 7, dx: 0, dy: 0,
+            isStunned: false
         };
 
         const target = {
             el: document.getElementById('target'),
-            x: 0,
-            y: 0,
-            width: 60,
-            height: 60
+            x: 0, y: 0, width: 50, height: 50, dx: 0, dy: 0, baseSpeed: 3
         };
 
-        const images = {
-            left: 'url("1n.png")',
-            up: 'url("2n.png")',
-            down: 'url("3n.png")',
-            right: 'url("4n.png")'
-        };
+        let obstacles = [];
 
-        const scoreDisplay = document.getElementById('scoreDisplay');
-        const livesDisplay = document.getElementById('livesDisplay');
-        const timeDisplay = document.getElementById('timeDisplay');
-        const startScreen = document.getElementById('startScreen');
-        const gameOverScreen = document.getElementById('gameOverScreen');
-        const finalScoreDisplay = document.getElementById('finalScore');
+        const images = { left: 'url("1n.png")', up: 'url("2n.png")', down: 'url("3n.png")', right: 'url("4n.png")' };
+
+        const ui = {
+            score: document.getElementById('scoreDisplay'),
+            lives: document.getElementById('livesDisplay'),
+            time: document.getElementById('timeDisplay'),
+            dash: document.getElementById('dashBar'),
+            start: document.getElementById('startScreen'),
+            gameOver: document.getElementById('gameOverScreen'),
+            finalScore: document.getElementById('finalScore'),
+            reason: document.getElementById('deathReason'),
+            obsContainer: document.getElementById('obstaclesContainer')
+        };
 
         function startGame() {
-            score = 0;
-            lives = 3;
+            score = 0; lives = 3; dashEnergy = 100;
+            ui.obsContainer.innerHTML = ''; obstacles = [];
             updateUI();
             
-            startScreen.classList.add('hidden');
-            gameOverScreen.classList.add('hidden');
-            player.el.classList.remove('hidden');
-            target.el.classList.remove('hidden');
+            ui.start.classList.add('hidden'); ui.gameOver.classList.add('hidden');
+            player.el.classList.remove('hidden'); target.el.classList.remove('hidden');
 
-            player.x = window.innerWidth / 2 - player.width / 2;
-            player.y = window.innerHeight / 2 - player.height / 2;
-            player.dx = 0;
-            player.dy = 0;
-            player.el.style.backgroundImage = images.right;
+            player.x = window.innerWidth / 2; player.y = window.innerHeight / 2;
+            player.dx = 0; player.dy = 0; player.el.style.backgroundImage = images.right;
+            player.isStunned = false; player.el.classList.remove('stunned');
 
-            spawnTarget();
-            
+            spawnTarget(true);
             isPlaying = true;
             
-            cancelAnimationFrame(animationFrameId);
-            clearInterval(targetTimer);
-            
-            startTimer();
-            gameLoop();
+            cancelAnimationFrame(animationFrameId); clearInterval(targetTimer);
+            startTimer(); gameLoop();
         }
 
         function gameOver(reason) {
             isPlaying = false;
-            cancelAnimationFrame(animationFrameId);
-            clearInterval(targetTimer);
-
-            player.el.classList.add('hidden');
-            target.el.classList.add('hidden');
-            gameOverScreen.classList.remove('hidden');
-            
-            finalScoreDisplay.innerText = `Your score: ${score} (${reason})`;
+            cancelAnimationFrame(animationFrameId); clearInterval(targetTimer);
+            player.el.classList.add('hidden'); target.el.classList.add('hidden');
+            ui.gameOver.classList.remove('hidden');
+            ui.finalScore.innerText = score;
+            ui.reason.innerText = reason;
         }
 
-        function spawnTarget() {
-            const maxX = window.innerWidth - target.width - 20;
-            const maxY = window.innerHeight - target.height - 20;
+        function spawnTarget(resetTime = false) {
+            target.x = Math.random() * (window.innerWidth - 100) + 50;
+            target.y = Math.random() * (window.innerHeight - 100) + 50;
+            
+            const angle = Math.random() * Math.PI * 2;
+            const currentSpeed = target.baseSpeed + (score * 0.2); 
+            target.dx = Math.cos(angle) * currentSpeed;
+            target.dy = Math.sin(angle) * currentSpeed;
 
-            target.x = Math.max(20, Math.floor(Math.random() * maxX));
-            target.y = Math.max(20, Math.floor(Math.random() * maxY));
+            if(resetTime) {
+                timeLeft = Math.max(5, 15 - Math.floor(score / 3)); 
+                ui.time.innerText = `Time: ${timeLeft}s`;
+            }
 
-            target.el.style.left = target.x + 'px';
-            target.el.style.top = target.y + 'px';
+            if (score > 0 && score % 3 === 0) spawnObstacle();
+        }
 
-            timeLeft = Math.max(3, 10 - Math.floor(score / 5)); 
-            timeDisplay.innerText = `Time: ${timeLeft}s`;
+        function spawnObstacle() {
+            const obs = document.createElement('div');
+            obs.className = 'obstacle';
+            ui.obsContainer.appendChild(obs);
+            
+            obstacles.push({
+                el: obs, width: 60, height: 60,
+                x: Math.random() < 0.5 ? 0 : window.innerWidth, 
+                y: Math.random() * window.innerHeight,
+                dx: (Math.random() - 0.5) * 8, 
+                dy: (Math.random() - 0.5) * 8  
+            });
         }
 
         function startTimer() {
             targetTimer = setInterval(() => {
                 if (!isPlaying) return;
-                
-                timeLeft--;
-                timeDisplay.innerText = `Time: ${timeLeft}s`;
+                timeLeft--; ui.time.innerText = `Time: ${timeLeft}s`;
 
                 if (timeLeft <= 0) {
-                    lives--;
-                    updateUI();
-                    if (lives <= 0) {
-                        gameOver("Ran out of lives!");
-                    } else {
-                        spawnTarget();
-                    }
+                    lives--; updateUI();
+                    if (lives <= 0) gameOver("Time ran out!");
+                    else spawnTarget(true);
                 }
             }, 1000);
         }
 
         function updateUI() {
-            scoreDisplay.innerText = `Score: ${score}`;
-            livesDisplay.innerText = `Lives: ${lives}`;
+            ui.score.innerText = `Score: ${score}`;
+            ui.lives.innerText = `Lives: ${lives}`;
+        }
+
+        function showPopup(x, y, text) {
+            const popup = document.createElement('div');
+            popup.className = 'point-popup';
+            popup.innerText = text;
+            popup.style.left = x + 'px';
+            popup.style.top = y + 'px';
+            document.body.appendChild(popup);
+            setTimeout(() => popup.remove(), 1000);
+        }
+
+        function applyStun() {
+            if (player.isStunned) return;
+            player.isStunned = true;
+            lives--; updateUI();
+            player.el.classList.add('stunned');
+            
+            if (lives <= 0) {
+                gameOver("Hit by a storm orb!");
+                return;
+            }
+            
+            setTimeout(() => {
+                player.isStunned = false;
+                player.el.classList.remove('stunned');
+            }, 1500); 
         }
 
         function gameLoop() {
             if (!isPlaying) return;
 
-            player.x += player.dx;
-            player.y += player.dy;
+            player.x += player.dx; player.y += player.dy;
 
-            if (player.x < 0 || player.x + player.width > window.innerWidth ||
-                player.y < 0 || player.y + player.height > window.innerHeight) {
-                gameOver("Hit the wall!");
-                return;
-            }
-
-            const pBox = { x: player.x + 10, y: player.y + 10, w: player.width - 20, h: player.height - 20 };
-            const tBox = { x: target.x + 5, y: target.y + 5, w: target.width - 10, h: target.height - 10 };
-
-            if (pBox.x < tBox.x + tBox.w &&
-                pBox.x + pBox.w > tBox.x &&
-                pBox.y < tBox.y + tBox.h &&
-                pBox.h + pBox.y > tBox.y) {
-                
-                score++;
-                updateUI();
-                spawnTarget();
-            }
+            if (player.x < 0) { player.x = 0; player.dx = 0; }
+            if (player.x + player.width > window.innerWidth) { player.x = window.innerWidth - player.width; player.dx = 0; }
+            if (player.y < 0) { player.y = 0; player.dy = 0; }
+            if (player.y + player.height > window.innerHeight) { player.y = window.innerHeight - player.height; player.dy = 0; }
 
             player.el.style.transform = `translate(${player.x}px, ${player.y}px)`;
+
+            if (!isDashing && dashEnergy < 100) {
+                dashEnergy += 0.5;
+                ui.dash.style.width = `${dashEnergy}%`;
+                if(dashEnergy > dashCost) ui.dash.style.background = "#00ff88";
+            }
+
+            target.x += target.dx; target.y += target.dy;
+            
+            if (target.x < 0 || target.x + target.width > window.innerWidth) target.dx *= -1;
+            if (target.y < 0 || target.y + target.height > window.innerHeight) target.dy *= -1;
+            
+            target.el.style.transform = `translate(${target.x}px, ${target.y}px)`;
+
+            obstacles.forEach(obs => {
+                obs.x += obs.dx; obs.y += obs.dy;
+                if (obs.x < 0 || obs.x + obs.width > window.innerWidth) obs.dx *= -1;
+                if (obs.y < 0 || obs.y + obs.height > window.innerHeight) obs.dy *= -1;
+                obs.el.style.transform = `translate(${obs.x}px, ${obs.y}px)`;
+
+                if (!player.isStunned) {
+                    const dist = Math.hypot((player.x + 40) - (obs.x + 30), (player.y + 40) - (obs.y + 30));
+                    if (dist < 50) applyStun();
+                }
+            });
+
+            const distToTarget = Math.hypot((player.x + 40) - (target.x + 25), (player.y + 40) - (target.y + 25));
+            if (distToTarget < 55) {
+                score++; updateUI();
+                showPopup(target.x, target.y, "+1");
+                spawnTarget(true);
+            }
 
             animationFrameId = requestAnimationFrame(gameLoop);
         }
 
-        function setDirection(dir) {
-            if (!isPlaying) return;
-            
-            player.dx = 0;
-            player.dy = 0;
+        const keys = { w: false, a: false, s: false, d: false };
 
-            if (dir === 'left') {
-                player.dx = -player.speed;
-                player.el.style.backgroundImage = images.left;
-            } else if (dir === 'right') {
-                player.dx = player.speed;
-                player.el.style.backgroundImage = images.right;
-            } else if (dir === 'up') {
-                player.dy = -player.speed;
-                player.el.style.backgroundImage = images.up;
-            } else if (dir === 'down') {
-                player.dy = player.speed;
-                player.el.style.backgroundImage = images.down;
+        function updateMovement() {
+            if (!isPlaying) return;
+            player.dx = 0; player.dy = 0;
+            
+            if (keys.w || keys.ArrowUp) { player.dy = -player.speed; player.el.style.backgroundImage = images.up; }
+            if (keys.s || keys.ArrowDown) { player.dy = player.speed; player.el.style.backgroundImage = images.down; }
+            if (keys.a || keys.ArrowLeft) { player.dx = -player.speed; player.el.style.backgroundImage = images.left; }
+            if (keys.d || keys.ArrowRight) { player.dx = player.speed; player.el.style.backgroundImage = images.right; }
+            
+            if (player.dx !== 0 && player.dy !== 0) {
+                player.dx *= 0.707; player.dy *= 0.707;
             }
         }
 
-        function stopMovement() {
-            player.dx = 0;
-            player.dy = 0;
-        }
-
         window.addEventListener('keydown', (e) => {
-            if (!isPlaying) return;
-            
-            switch(e.key.toLowerCase()) {
-                case 'w':
-                case 'arrowup':
-                    setDirection('up');
-                    break;
-                case 'a':
-                case 'arrowleft':
-                    setDirection('left');
-                    break;
-                case 's':
-                case 'arrowdown':
-                    setDirection('down');
-                    break;
-                case 'd':
-                case 'arrowright':
-                    setDirection('right');
-                    break;
-                case ' ':
-                    stopMovement();
-                    break;
+            const k = e.key.toLowerCase();
+            if (keys.hasOwnProperty(k) || k.includes('arrow')) {
+                keys[k] = true; updateMovement();
+            }
+            if (k === ' ' && dashEnergy >= dashCost && !isDashing) {
+                isDashing = true;
+                dashEnergy -= dashCost;
+                ui.dash.style.background = "#ff4747"; 
+                player.speed = player.baseSpeed * 3; 
+                updateMovement();
+                
+                setTimeout(() => {
+                    player.speed = player.baseSpeed;
+                    isDashing = false;
+                    updateMovement();
+                }, 200); 
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            const k = e.key.toLowerCase();
+            if (keys.hasOwnProperty(k) || k.includes('arrow')) {
+                keys[k] = false; updateMovement();
             }
         });
     </script>
